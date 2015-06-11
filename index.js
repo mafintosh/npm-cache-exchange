@@ -8,13 +8,21 @@ var pump = require('pump')
 var NPM = path.join(process.env.HOME || process.env.USERPROFILE, '.npm')
 
 module.exports = function () {
+  var blobs = 0
   var pending = 2
+  var drains = []
 
   var plex = multiplex(function (stream, id) {
     if (id === 'have') return onhave(stream)
+
     plex.emit('send', id)
     var fullpath = path.join(NPM, path.resolve('/', id))
-    pump(fs.createReadStream(fullpath), stream)
+
+    blobs++
+    pump(fs.createReadStream(fullpath), stream, function () {
+      blobs--
+      while (!blobs && drains.length) drains.shift()()
+    })
   })
 
   var have = plex.createStream('have')
@@ -25,6 +33,11 @@ module.exports = function () {
   visit(have, NPM, function () {
     have.write('-')
   })
+
+  function drain (fn) {
+    if (!blobs) return fn()
+    drains.push(fn)
+  }
 
   function done () {
     if (!--pending) plex.end()
@@ -54,7 +67,8 @@ module.exports = function () {
         mkdirp(path.join(fullpath, '..'), function (err) {
           if (err) return cb(err)
           plex.emit('fetch', data)
-          pump(plex.createStream(data, {chunked: true}), fs.createWriteStream(fullpath), cb)
+          pump(plex.createStream(data, {chunked: true}), fs.createWriteStream(fullpath))
+          cb()
         })
       })
     }
@@ -78,7 +92,9 @@ module.exports = function () {
         return
       }
 
-      have.write(filename.replace(NPM, '.'), cb)
+      drain(function () {
+        have.write(filename.replace(NPM, '.'), cb)
+      })
     })
   }
 
