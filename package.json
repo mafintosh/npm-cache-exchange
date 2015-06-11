@@ -1,6 +1,6 @@
 {
   "name": "npm-cache-exchange",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Exchange npm caches with someone else on the local network",
   "main": "index.js",
   "dependencies": {
