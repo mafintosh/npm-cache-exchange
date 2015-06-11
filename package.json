@@ -1,0 +1,27 @@
+{
+  "name": "npm-cache-exchange",
+  "version": "0.0.0",
+  "description": "Exchange npm caches with someone else on the local network",
+  "main": "index.js",
+  "dependencies": {
+    "airpaste": "^1.0.9",
+    "mkdirp": "^0.5.1",
+    "multiplex": "^6.2.1",
+    "parallel-transform": "^0.2.2",
+    "pump": "^1.0.0"
+  },
+  "devDependencies": {},
+  "bin": {
+    "npm-cache-exchange": "./bin.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mafintosh/npm-cache-exchange.git"
+  },
+  "author": "Mathias Buus (@mafintosh)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mafintosh/npm-cache-exchange/issues"
+  },
+  "homepage": "https://github.com/mafintosh/npm-cache-exchange"
+}
