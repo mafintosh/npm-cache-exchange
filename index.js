@@ -4,8 +4,9 @@ var parallel = require('parallel-transform')
 var multiplex = require('multiplex')
 var mkdirp = require('mkdirp')
 var pump = require('pump')
+var userHome = require('user-home')
 
-var NPM = path.join(process.env.HOME || process.env.USERPROFILE, '.npm')
+var NPM = path.join(userHome, '.npm')
 
 module.exports = function () {
   var blobs = 0
